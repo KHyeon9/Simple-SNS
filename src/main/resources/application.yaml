@@ -1,0 +1,21 @@
+spring:
+  jpa:
+    database: mysql
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQLDialect
+        show_sql: true
+  datasource:
+    hikari:
+      maximum-pool-size: 4
+    url: jdbc:mysql://localhost:3306/simple_sns
+    username: hyeon
+    password: password
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  sql:
+    init:
+      platform: mysql
+
