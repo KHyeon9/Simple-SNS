@@ -1,21 +1,21 @@
 package com.simple.sns.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.simple.sns.controller.request.UserJoinRequest;
 import com.simple.sns.controller.request.UserLoginRequest;
+import com.simple.sns.exception.ErrorCode;
 import com.simple.sns.exception.SnsApplicationException;
 import com.simple.sns.model.User;
 import com.simple.sns.service.UserService;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -57,7 +57,7 @@ public class UserControllerTest {
         String password = "password";
 
         // When
-        when(userService.join(userName, password)).thenThrow(new SnsApplicationException());
+        when(userService.join(userName, password)).thenThrow(new SnsApplicationException(ErrorCode.DUPLICATED_USER_NAME, ""));
 
         //then
         mockMvc.perform(post("/api/v1/users/join")
@@ -91,7 +91,7 @@ public class UserControllerTest {
         String password = "password";
 
         // When
-        when(userService.login(userName, password)).thenThrow(new SnsApplicationException());
+        when(userService.login(userName, password)).thenThrow(new SnsApplicationException(ErrorCode.DUPLICATED_USER_NAME, ""));
 
         // then
         mockMvc.perform(post("/api/v1/users/login")
@@ -108,7 +108,7 @@ public class UserControllerTest {
         String password = "password";
 
         // When
-        when(userService.login(userName, password)).thenThrow(new SnsApplicationException());
+        when(userService.login(userName, password)).thenThrow(new SnsApplicationException(ErrorCode.DUPLICATED_USER_NAME, ""));
 
         // then
         mockMvc.perform(post("/api/v1/users/login")
