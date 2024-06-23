@@ -18,4 +18,8 @@ spring:
   sql:
     init:
       platform: mysql
-
+jwt:
+  secret-key: simple_sns_project.sns-application-2024.secret_key
+  token:
+    # 30 days
+    expired-time-ms: 2592000000
