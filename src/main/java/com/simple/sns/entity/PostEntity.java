@@ -12,7 +12,7 @@ import java.time.Instant;
 @Getter
 @Setter
 @Table(name = "\"post\"")
-@SQLDelete(sql = "UPDATE \"user\" SET deleted_at = NOW() where id=?")
+@SQLDelete(sql = "UPDATE \"post\" SET deleted_at = NOW() where id=?")
 @Where(clause = "deleted_at is NULL")
 @Entity
 public class PostEntity {
@@ -48,5 +48,14 @@ public class PostEntity {
     @PreUpdate
     void updatedAt() {
         this.updatedAt = Timestamp.from(Instant.now());
+    }
+
+    public static PostEntity of(String title, String content, UserEntity user) {
+        PostEntity entity = new PostEntity();
+        entity.setTitle(title);
+        entity.setContent(content);
+        entity.setUser(user);
+
+        return entity;
     }
 }
