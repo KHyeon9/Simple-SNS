@@ -48,7 +48,7 @@ public class PostServiceTest {
     }
 
     @Test
-    void 포스트_작성시_요청한_유저가_존재하자_않는_경우() {
+    void 포스트_작성시_요청한_유저가_존재하자_않는_경우_에러_발생() {
         // Given
         String title = "title";
         String content = "content";
@@ -84,7 +84,7 @@ public class PostServiceTest {
     }
 
     @Test
-    void 포스트_수정시_포스트가_존재하지_않는_경우_에러_반환() {
+    void 포스트_수정시_포스트가_존재하지_않는_경우_에러_발생() {
         // Given
         String title = "title";
         String content = "content";
@@ -105,7 +105,7 @@ public class PostServiceTest {
     }
 
     @Test
-    void 포스트_수정시_권한이_없는_경우_에러_반환() {
+    void 포스트_수정시_권한이_없는_경우_에러_발생() {
         // Given
         String title = "title";
         String content = "content";
