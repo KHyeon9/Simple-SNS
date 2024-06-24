@@ -34,12 +34,12 @@ class UserServiceTest {
         // Given
         String userName = "userName";
         String password = "password";
-        UserEntity fixture = get(userName, password);
+        UserEntity fixture = get(userName, password, 1);
 
         // When
         when(userEntityRepository.findByUserName(userName)).thenReturn(Optional.empty());
         when(encoder.encode(password)).thenReturn("encrypt_password");
-        when(userEntityRepository.save(any())).thenReturn(UserEntityFixture.get(userName, password));
+        when(userEntityRepository.save(any())).thenReturn(UserEntityFixture.get(userName, password, 1));
 
         // Then
         assertDoesNotThrow(() -> userService.join(userName, password));
@@ -50,7 +50,7 @@ class UserServiceTest {
         // Given
         String userName = "userName";
         String password = "password";
-        UserEntity fixture = get(userName, password);
+        UserEntity fixture = get(userName, password, 1);
 
         // When
         when(userEntityRepository.findByUserName(userName)).thenReturn(Optional.of(fixture));
@@ -67,7 +67,7 @@ class UserServiceTest {
         // Given
         String userName = "userName";
         String password = "password";
-        UserEntity fixture = get(userName, password);
+        UserEntity fixture = get(userName, password, 1);
 
         // When
         when(userEntityRepository.findByUserName(userName)).thenReturn(Optional.of(fixture));
@@ -97,7 +97,7 @@ class UserServiceTest {
         String userName = "userName";
         String password = "password";
         String wrongPassword = "password";
-        UserEntity fixture = get(userName, password);
+        UserEntity fixture = get(userName, password, 1);
 
         // When
         when(userEntityRepository.findByUserName(userName)).thenReturn(Optional.of(fixture));
