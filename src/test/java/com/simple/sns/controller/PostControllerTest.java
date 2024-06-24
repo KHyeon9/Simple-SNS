@@ -2,7 +2,9 @@ package com.simple.sns.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.simple.sns.controller.request.PostCreateRequest;
+import com.simple.sns.controller.request.PostModifyRequest;
 import com.simple.sns.exception.ErrorCode;
+import com.simple.sns.exception.SnsApplicationException;
 import com.simple.sns.service.PostService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +16,11 @@ import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -41,14 +47,14 @@ public class PostControllerTest {
         // When & Then
         mockMvc.perform(post("/api/v1/posts")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(new PostCreateRequest("title", "content"))))
+                        .content(objectMapper.writeValueAsBytes(new PostCreateRequest(title, content))))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
 
     @Test
     @WithAnonymousUser
-    void 포스트_작성시_로그인하지_않는_경우() throws Exception {
+    void 포스트_작성시_로그인하지_않는_경우_에러_발생() throws Exception {
         // Given
         String title = "title";
         String content = "content";
@@ -59,5 +65,73 @@ public class PostControllerTest {
                         .content(objectMapper.writeValueAsBytes(new PostCreateRequest(title, content))))
                 .andDo(print())
                 .andExpect(status().is(ErrorCode.INVALID_TOKEN.getStatus().value()));
+    }
+
+    @Test
+    @WithMockUser
+    void 포스트_수정() throws Exception {
+        // Given
+        String title = "title";
+        String content = "content";
+
+        // When & Then
+        mockMvc.perform(put("/api/v1/posts/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(new PostModifyRequest(title, content))))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithAnonymousUser
+    void 포스트_수정시_로그인하지_않은_경우_에러_발생 () throws Exception {
+        // Given
+        String title = "title";
+        String content = "content";
+
+        // When & Then
+        mockMvc.perform(put("/api/v1/posts/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(new PostModifyRequest(title, content))))
+                .andDo(print())
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @WithMockUser
+    void 포스트_수정시_본인이_작성한_글이_아닌경우_에러_발생 () throws Exception {
+        // Given
+        String title = "title";
+        String content = "content";
+
+        // When
+        doThrow(new SnsApplicationException(ErrorCode.INVALID_PERMISSION))
+                .when(postService).modify(eq(title), eq(content), any(), eq(1));
+
+        // Then
+        mockMvc.perform(put("/api/v1/posts/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(new PostModifyRequest(title, content))))
+                .andDo(print())
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @WithMockUser
+    void 포스트_수정시_수정하려는_글이_없는경우_에러_발생 () throws Exception {
+        // Given
+        String title = "title";
+        String content = "content";
+
+        // When
+        doThrow(new SnsApplicationException(ErrorCode.POST_NOT_FOUND))
+                .when(postService).modify(eq(title), eq(content), any(), eq(1));
+
+        // Then
+        mockMvc.perform(put("/api/v1/posts/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(new PostModifyRequest(title, content))))
+                .andDo(print())
+                .andExpect(status().isNotFound());
     }
 }
