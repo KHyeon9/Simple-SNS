@@ -71,12 +71,13 @@ public class PostServiceTest {
         String userName = "userName";
         Integer postId = 1;
 
-        PostEntity postEntity = PostEntityFixture.get(userName, postId);
+        PostEntity postEntity = PostEntityFixture.get(userName, postId, 1);
         UserEntity userEntity = postEntity.getUser();
 
         // When
         when(userEntityRepository.findByUserName(userName)).thenReturn(Optional.of(userEntity));
         when(postEntityRepository.findById(postId)).thenReturn(Optional.of(postEntity));
+        when(postEntityRepository.saveAndFlush(any())).thenReturn(postEntity);
 
         // Then
         assertDoesNotThrow(() -> postService.modify(title, content, userName, postId));
@@ -90,7 +91,7 @@ public class PostServiceTest {
         String userName = "userName";
         Integer postId = 1;
 
-        PostEntity postEntity = PostEntityFixture.get(userName, postId);
+        PostEntity postEntity = PostEntityFixture.get(userName, postId, 1);
         UserEntity userEntity = postEntity.getUser();
 
         // When
@@ -111,8 +112,8 @@ public class PostServiceTest {
         String userName = "userName";
         Integer postId = 1;
 
-        PostEntity postEntity = PostEntityFixture.get(userName, postId);
-        UserEntity writer = UserEntityFixture.get("testUserName", "password");
+        PostEntity postEntity = PostEntityFixture.get(userName, postId, 1);
+        UserEntity writer = UserEntityFixture.get("testUserName", "password", 2);
 
         // When
         when(userEntityRepository.findByUserName(userName)).thenReturn(Optional.of(writer));
