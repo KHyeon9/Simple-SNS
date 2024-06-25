@@ -1,6 +1,6 @@
 package com.simple.sns.model;
 
-import com.simple.sns.entity.PostEntity;
+import com.simple.sns.model.entity.PostEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

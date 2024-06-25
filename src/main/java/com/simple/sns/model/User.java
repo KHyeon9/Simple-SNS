@@ -1,6 +1,6 @@
 package com.simple.sns.model;
 
-import com.simple.sns.entity.UserEntity;
+import com.simple.sns.model.entity.UserEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;

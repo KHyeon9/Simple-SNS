@@ -1,7 +1,7 @@
 package com.simple.sns.fixture;
 
-import com.simple.sns.entity.PostEntity;
-import com.simple.sns.entity.UserEntity;
+import com.simple.sns.model.entity.PostEntity;
+import com.simple.sns.model.entity.UserEntity;
 
 public class PostEntityFixture {
 

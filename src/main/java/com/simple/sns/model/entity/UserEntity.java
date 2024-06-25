@@ -1,4 +1,4 @@
-package com.simple.sns.entity;
+package com.simple.sns.model.entity;
 
 import com.simple.sns.model.UserRole;
 import jakarta.persistence.*;

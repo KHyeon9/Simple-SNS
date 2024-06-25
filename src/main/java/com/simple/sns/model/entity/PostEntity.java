@@ -1,4 +1,4 @@
-package com.simple.sns.entity;
+package com.simple.sns.model.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;

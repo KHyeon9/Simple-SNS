@@ -1,7 +1,7 @@
 package com.simple.sns.service;
 
-import com.simple.sns.entity.PostEntity;
-import com.simple.sns.entity.UserEntity;
+import com.simple.sns.model.entity.PostEntity;
+import com.simple.sns.model.entity.UserEntity;
 import com.simple.sns.exception.ErrorCode;
 import com.simple.sns.exception.SnsApplicationException;
 import com.simple.sns.fixture.PostEntityFixture;
