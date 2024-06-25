@@ -1,7 +1,6 @@
 package com.simple.sns.controller.response;
 
 import com.simple.sns.model.Post;
-import com.simple.sns.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -13,7 +12,7 @@ public class PostResponse {
 
     private Integer id;
     private String title;
-    private String content;
+    private String body;
     private UserResponse user;
     private Timestamp registeredAt;
     private Timestamp updatedAt;
@@ -23,7 +22,7 @@ public class PostResponse {
         return new PostResponse(
                 post.getId(),
                 post.getTitle(),
-                post.getContent(),
+                post.getBody(),
                 UserResponse.fromUser(post.getUser()),
                 post.getRegisteredAt(),
                 post.getUpdatedAt(),

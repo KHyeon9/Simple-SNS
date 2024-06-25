@@ -12,7 +12,7 @@ public class Post {
 
     private Integer id;
     private String title;
-    private String content;
+    private String body;
     private User user;
     private Timestamp registeredAt;
     private Timestamp updatedAt;
@@ -23,7 +23,7 @@ public class Post {
         return new Post(
                 entity.getId(),
                 entity.getTitle(),
-                entity.getContent(),
+                entity.getBody(),
                 User.fromEntity(entity.getUser()),
                 entity.getRegisteredAt(),
                 entity.getUpdatedAt(),

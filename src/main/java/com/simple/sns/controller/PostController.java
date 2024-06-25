@@ -21,14 +21,14 @@ public class PostController {
 
     @PostMapping
     public Response<Void> create(@RequestBody PostCreateRequest request, Authentication authentication) {
-        postService.create(request.getTitle(), request.getContent(), authentication.getName());
+        postService.create(request.getTitle(), request.getBody(), authentication.getName());
 
         return Response.success();
     }
 
     @PutMapping("/{postId}")
     public Response<PostResponse> modify(@PathVariable Integer postId, @RequestBody PostModifyRequest request, Authentication authentication) {
-        Post post = postService.modify(request.getTitle(), request.getContent(), authentication.getName(), postId);
+        Post post = postService.modify(request.getTitle(), request.getBody(), authentication.getName(), postId);
 
         return Response.success(PostResponse.fromPost(post));
     }

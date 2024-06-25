@@ -24,8 +24,8 @@ public class PostEntity {
     @Column(name = "title")
     private String title;
 
-    @Column(name = "content", columnDefinition = "TEXT")
-    private String content;
+    @Column(name = "body", columnDefinition = "TEXT")
+    private String body;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -53,7 +53,7 @@ public class PostEntity {
     public static PostEntity of(String title, String content, UserEntity user) {
         PostEntity entity = new PostEntity();
         entity.setTitle(title);
-        entity.setContent(content);
+        entity.setBody(content);
         entity.setUser(user);
 
         return entity;

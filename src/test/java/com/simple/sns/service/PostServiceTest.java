@@ -37,7 +37,7 @@ public class PostServiceTest {
     void 포스트_작성이_성공한_경우() {
         // Given
         String title = "title";
-        String content = "content";
+        String body = "body";
         String userName = "userName";
 
         // When
@@ -45,14 +45,14 @@ public class PostServiceTest {
         when(postEntityRepository.save(any())).thenReturn(mock(PostEntity.class));
 
         // Then
-        assertDoesNotThrow(() -> postService.create(title, content, userName));
+        assertDoesNotThrow(() -> postService.create(title, body, userName));
     }
 
     @Test
     void 포스트_작성시_요청한_유저가_존재하자_않는_경우_에러_발생() {
         // Given
         String title = "title";
-        String content = "content";
+        String body = "body";
         String userName = "userName";
 
         // When
@@ -60,7 +60,7 @@ public class PostServiceTest {
         when(postEntityRepository.save(any())).thenReturn(mock(PostEntity.class));
 
         // Then
-        SnsApplicationException e = assertThrows(SnsApplicationException.class, () -> postService.create(title, content, userName));
+        SnsApplicationException e = assertThrows(SnsApplicationException.class, () -> postService.create(title, body, userName));
         assertEquals(ErrorCode.USER_NOT_FOUND, e.getErrorCode());
     }
 
@@ -68,7 +68,7 @@ public class PostServiceTest {
     void 포스트_수정이_성공한_경우() {
         // Given
         String title = "title";
-        String content = "content";
+        String body = "body";
         String userName = "userName";
         Integer postId = 1;
 
@@ -81,14 +81,14 @@ public class PostServiceTest {
         when(postEntityRepository.saveAndFlush(any())).thenReturn(postEntity);
 
         // Then
-        assertDoesNotThrow(() -> postService.modify(title, content, userName, postId));
+        assertDoesNotThrow(() -> postService.modify(title, body, userName, postId));
     }
 
     @Test
     void 포스트_수정시_포스트가_존재하지_않는_경우_에러_발생() {
         // Given
         String title = "title";
-        String content = "content";
+        String body = "body";
         String userName = "userName";
         Integer postId = 1;
 
@@ -101,7 +101,7 @@ public class PostServiceTest {
 
         // Then
         SnsApplicationException e = assertThrows(
-                SnsApplicationException.class, () -> postService.modify(title, content, userName, postId));
+                SnsApplicationException.class, () -> postService.modify(title, body, userName, postId));
         assertEquals(ErrorCode.POST_NOT_FOUND, e.getErrorCode());
     }
 
@@ -109,7 +109,7 @@ public class PostServiceTest {
     void 포스트_수정시_권한이_없는_경우_에러_발생() {
         // Given
         String title = "title";
-        String content = "content";
+        String body = "body";
         String userName = "userName";
         Integer postId = 1;
 
@@ -122,7 +122,7 @@ public class PostServiceTest {
 
         // Then
         SnsApplicationException e = assertThrows(
-                SnsApplicationException.class, () -> postService.modify(title, content, userName, postId));
+                SnsApplicationException.class, () -> postService.modify(title, body, userName, postId));
         assertEquals(ErrorCode.INVALID_PERMISSION, e.getErrorCode());
     }
 
@@ -197,9 +197,11 @@ public class PostServiceTest {
     void 내_피드목록_조회가_성공한_경우() {
         // Given
         Pageable pageable = mock(Pageable.class);
+        UserEntity user = mock(UserEntity.class);
 
         // When
-        when(postEntityRepository.findAllByUser(any(), pageable)).thenReturn(Page.empty());
+        when(userEntityRepository.findByUserName(any())).thenReturn(Optional.of(user));
+        when(postEntityRepository.findAllByUser(user, pageable)).thenReturn(Page.empty());
 
         // Then
         assertDoesNotThrow(() -> postService.my("", pageable));

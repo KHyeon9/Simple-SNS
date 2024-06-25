@@ -47,7 +47,7 @@ public class PostService {
         }
 
         postEntity.setTitle(title);
-        postEntity.setContent(content);
+        postEntity.setBody(content);
 
         return Post.fromEntity(postEntityRepository.saveAndFlush(postEntity));
     }
