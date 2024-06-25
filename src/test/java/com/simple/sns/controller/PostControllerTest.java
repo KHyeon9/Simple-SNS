@@ -303,7 +303,7 @@ public class PostControllerTest {
     }
 
     @Test
-    @WithAnonymousUser
+    @WithMockUser
     void 좋아요기능_버튼을_클릭시_게시물이_없는_경우_에러_발생() throws Exception {
         // Given
 
