@@ -271,4 +271,52 @@ public class PostControllerTest {
                 .andDo(print())
                 .andExpect(status().isUnauthorized());
     }
+
+    @Test
+    @WithMockUser
+    void 좋아요기능() throws Exception {
+        // Given
+
+        // When
+
+        // Then
+        mockMvc.perform(post("/api/v1/posts/1/likes")
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithAnonymousUser
+    void 좋아요기능_버튼을_로그인하지_않고_클릭시_에러_발생() throws Exception {
+        // Given
+
+        // When
+
+        // Then
+        mockMvc.perform(post("/api/v1/posts/1/likes")
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @WithAnonymousUser
+    void 좋아요기능_버튼을_클릭시_게시물이_없는_경우_에러_발생() throws Exception {
+        // Given
+
+        // When
+        doThrow(new SnsApplicationException(ErrorCode.POST_NOT_FOUND))
+                .when(postService).like(any(), any());
+
+        // Then
+        mockMvc.perform(post("/api/v1/posts/1/likes")
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
 }
