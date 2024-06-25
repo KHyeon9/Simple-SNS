@@ -1,10 +1,12 @@
 package com.simple.sns.service;
 
-import com.simple.sns.entity.PostEntity;
-import com.simple.sns.entity.UserEntity;
+import com.simple.sns.model.entity.LikeEntity;
+import com.simple.sns.model.entity.PostEntity;
+import com.simple.sns.model.entity.UserEntity;
 import com.simple.sns.exception.ErrorCode;
 import com.simple.sns.exception.SnsApplicationException;
 import com.simple.sns.model.Post;
+import com.simple.sns.repository.LikeEntityRepository;
 import com.simple.sns.repository.PostEntityRepository;
 import com.simple.sns.repository.UserEntityRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,12 +15,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Service
 public class PostService {
 
     private final PostEntityRepository postEntityRepository;
     private final UserEntityRepository userEntityRepository;
+    private final LikeEntityRepository likeEntityRepository;
 
     @Transactional
     public void create(String title, String content, String userName) {
@@ -84,6 +89,32 @@ public class PostService {
 
     @Transactional
     public void like(Integer postId, String userName) {
+        // user find
+        UserEntity userEntity = userEntityRepository.findByUserName(userName).orElseThrow(() ->
+                new SnsApplicationException(ErrorCode.USER_NOT_FOUND, String.format("%s not founded", userName)));
 
+        // post exist
+        PostEntity postEntity = postEntityRepository.findById(postId).orElseThrow(() ->
+                new SnsApplicationException(ErrorCode.POST_NOT_FOUND, String.format("%s not founded", postId)));
+
+        // check liked -> throw
+        likeEntityRepository.findByUserAndPost(userEntity, postEntity).ifPresent(likeEntity -> {
+            throw new SnsApplicationException(
+                    ErrorCode.ALREADY_LIKED, String.format("Username %s already like post %d", userName, postId));
+        });
+
+        // like save
+        likeEntityRepository.save(LikeEntity.of(userEntity, postEntity));
+    }
+
+    public int likeCount(Integer postId) {
+        // post exist
+        PostEntity postEntity = postEntityRepository.findById(postId).orElseThrow(() ->
+                new SnsApplicationException(ErrorCode.POST_NOT_FOUND, String.format("%s not founded", postId)));
+
+        // count like 
+        // List<LikeEntity> likeEntitys = likeEntityRepository.findAllByPost(postEntity); 이건 entity를 가져오므로 좋지않음
+
+        return likeEntityRepository.countByPost(postEntity);
     }
 }
