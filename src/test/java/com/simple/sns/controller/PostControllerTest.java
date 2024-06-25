@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -201,5 +202,73 @@ public class PostControllerTest {
                 )
                 .andDo(print())
                 .andExpect(status().is(ErrorCode.POST_NOT_FOUND.getStatus().value()));
+    }
+
+    @Test
+    @WithMockUser
+    void 피드_목록_조회() throws Exception {
+        // Given
+        Page<Post> list = postService.list(any());
+
+        // When
+        when(list).thenReturn(Page.empty());
+
+        // Then
+        mockMvc.perform(get("/api/v1/posts")
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithAnonymousUser
+    void 피드_목록_요청시_로그인하지_않은_경우_에러_발생() throws Exception {
+        // Given
+        Page<Post> list = postService.list(any());
+
+        // When
+        when(list).thenReturn(Page.empty());
+
+        // Then
+        mockMvc.perform(get("/api/v1/posts")
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().is(ErrorCode.INVALID_TOKEN.getStatus().value()));
+    }
+
+    @Test
+    @WithMockUser
+    void 내_피드_목록_조회() throws Exception {
+        // Given
+        Page<Post> my = postService.my(any(), any());
+
+        // When
+        when(my).thenReturn(Page.empty());
+
+        // Then
+        mockMvc.perform(get("/api/v1/posts/my")
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockUser
+    void 내_피드_목록_요청시_로그인하지_않은_경우_에러_발생() throws Exception {
+        // Given
+        Page<Post> my = postService.my(any(), any());
+
+        // When
+        when(my).thenReturn(Page.empty());
+
+        // Then
+        mockMvc.perform(get("/api/v1/posts/my")
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().is(ErrorCode.INVALID_TOKEN.getStatus().value()));
     }
 }
