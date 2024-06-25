@@ -15,6 +15,7 @@ public enum ErrorCode {
     POST_NOT_FOUND(HttpStatus.NOT_FOUND, "Post not founded"),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "User not founded"),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error"),
+    ALREADY_LIKED(HttpStatus.CONFLICT, "User already liked the post"),
     ;
 
     private HttpStatus status;
