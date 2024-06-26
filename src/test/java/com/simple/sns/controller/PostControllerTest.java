@@ -1,6 +1,7 @@
 package com.simple.sns.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.simple.sns.controller.request.PostCommentRequest;
 import com.simple.sns.controller.request.PostCreateRequest;
 import com.simple.sns.controller.request.PostModifyRequest;
 import com.simple.sns.exception.ErrorCode;
@@ -274,7 +275,7 @@ public class PostControllerTest {
 
     @Test
     @WithMockUser
-    void 좋아요기능() throws Exception {
+    void 좋아요_기능() throws Exception {
         // Given
 
         // When
@@ -289,7 +290,7 @@ public class PostControllerTest {
 
     @Test
     @WithAnonymousUser
-    void 좋아요기능_버튼을_로그인하지_않고_클릭시_에러_발생() throws Exception {
+    void 좋아요_기능_버튼을_로그인하지_않고_클릭시_에러_발생() throws Exception {
         // Given
 
         // When
@@ -304,7 +305,7 @@ public class PostControllerTest {
 
     @Test
     @WithMockUser
-    void 좋아요기능_버튼을_클릭시_게시물이_없는_경우_에러_발생() throws Exception {
+    void 좋아요_기능_버튼을_클릭시_게시물이_없는_경우_에러_발생() throws Exception {
         // Given
 
         // When
@@ -319,4 +320,53 @@ public class PostControllerTest {
                 .andExpect(status().isNotFound());
     }
 
+    @Test
+    @WithMockUser
+    void 댓글_기능() throws Exception {
+        // Given
+
+        // When
+
+        // Then
+        mockMvc.perform(post("/api/v1/posts/1/comments")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(new PostCommentRequest("comment")))
+                )
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithAnonymousUser
+    void 댓글_작성시_로그인하지_않은_경우_에러_발생() throws Exception {
+        // Given
+
+        // When
+
+        // Then
+        mockMvc.perform(post("/api/v1/posts/1/comments")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(new PostCommentRequest("comment")))
+                )
+                .andDo(print())
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @WithMockUser
+    void 댓글_작성시_게시물이_없는_경우_에러_발생() throws Exception {
+        // Given
+
+        // When
+        doThrow(new SnsApplicationException(ErrorCode.POST_NOT_FOUND))
+                .when(postService).comment(any(), any(), any());
+
+        // Then
+        mockMvc.perform(post("/api/v1/posts/1/comments")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(new PostCommentRequest("comment")))
+                )
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
 }
