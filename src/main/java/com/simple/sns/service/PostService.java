@@ -60,6 +60,12 @@ public class PostService {
                     ErrorCode.INVALID_PERMISSION, String.format("%s has no permission with %s", userName, postId));
         }
 
+        // like delete
+        likeEntityRepository.deleteAllByPost(postEntity);
+
+        // comment delete
+        commentEntityRepository.deleteAllByPost(postEntity);
+
         postEntityRepository.delete(postEntity);
     }
 
@@ -92,7 +98,7 @@ public class PostService {
                 postEntity.getUser(), AlarmType.NEW_LIKE_ON_POST, new AlarmArgs(userEntity.getId(), postEntity.getId())));
     }
 
-    public int likeCount(Integer postId) {
+    public long likeCount(Integer postId) {
         PostEntity postEntity = getPostEntityOrException(postId);
 
         // count like 
