@@ -29,6 +29,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         //get header
         final String header = request.getHeader(HttpHeaders.AUTHORIZATION);
 
+        // header가 null이거나 Bearer로 시작하지 않는 경우 에러 발생
         if (header == null || !header.startsWith("Bearer ")) {
             log.error("Error occurs while getting header. header is null or invalid {}", request.getRequestURL());
             filterChain.doFilter(request, response);
@@ -36,14 +37,17 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         }
 
         try {
+            // token을 헤더에서 가져옴 Bearer token-value 형식이기에 split으로 값을 가져옴
             final String token = header.split(" ")[1].trim();
 
+            // token 만료 시간 확인
             if (JwtTokenUtils.isExpired(token, key)) {
                 log.error("Key is expired");
                 filterChain.doFilter(request, response);
                 return;
             }
-
+            
+            // token에서 파싱하여 data 가져오기
             String userName = JwtTokenUtils.getUserName(token, key);
             User user = userService.loadUserByUserName(userName);
 
