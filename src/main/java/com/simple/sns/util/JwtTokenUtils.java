@@ -34,7 +34,7 @@ public class JwtTokenUtils {
                 .setClaims(claims)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + expiredTimeMs))
-                .signWith(SignatureAlgorithm.HS256, getKey(key))  // HS256 알고리즘 사용
+                .signWith(getKey(key), SignatureAlgorithm.HS256)  // HS256 알고리즘 사용
                 .compact();
 
     }
