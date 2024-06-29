@@ -40,6 +40,9 @@ dependencies {
 	// mysql
 	runtimeOnly 'com.mysql:mysql-connector-j'
 
+	// redis
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
 	// type
 	implementation 'com.vladmihalcea:hibernate-types-60:2.19.2'
 
@@ -77,8 +80,8 @@ task cleanFrontEnd(type: Delete) {
 	delete "$projectDir/front-end/static", "$projectDir/front-end/node_modules"
 }
 
-npmBuild.dependsOn npmInstall
-copyFrontEnd.dependsOn npmBuild
-compileJava.dependsOn copyFrontEnd
-
-clean.dependsOn cleanFrontEnd
+//npmBuild.dependsOn npmInstall
+//copyFrontEnd.dependsOn npmBuild
+//compileJava.dependsOn copyFrontEnd
+//
+//clean.dependsOn cleanFrontEnd
