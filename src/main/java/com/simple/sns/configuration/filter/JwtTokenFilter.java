@@ -16,6 +16,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -23,22 +24,29 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
     private final String key;
     private final UserService userService;
+    private final static List<String> TOKEN_IN_PARAM_URLS = List.of("/api/v1/users/alarm/subscribe");
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        //get header
-        final String header = request.getHeader(HttpHeaders.AUTHORIZATION);
-
-        // header가 null이거나 Bearer로 시작하지 않는 경우 에러 발생
-        if (header == null || !header.startsWith("Bearer ")) {
-            log.error("Error occurs while getting header. header is null or invalid {}", request.getRequestURL());
-            filterChain.doFilter(request, response);
-            return;
-        }
+        final String token;
 
         try {
             // token을 헤더에서 가져옴 Bearer token-value 형식이기에 split으로 값을 가져옴
-            final String token = header.split(" ")[1].trim();
+            if (TOKEN_IN_PARAM_URLS.contains(request.getRequestURI())) {
+                log.info("Request with {} check the query param", request.getRequestURL());
+                token = request.getQueryString().split("=")[1].trim();
+            } else {
+                final String header = request.getHeader(HttpHeaders.AUTHORIZATION);
+
+                // header가 null이거나 Bearer로 시작하지 않는 경우 에러 발생
+                if (header == null || !header.startsWith("Bearer ")) {
+                    log.error("Error occurs while getting header. header is null or invalid {}", request.getRequestURL());
+                    filterChain.doFilter(request, response);
+                    return;
+                }
+                token = header.split(" ")[1].trim();
+            }
+
 
             // token 만료 시간 확인
             if (JwtTokenUtils.isExpired(token, key)) {
